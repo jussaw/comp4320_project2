@@ -1,6 +1,6 @@
 comp4320_proj1
 
-*see project1 prompt*
+*see project2 prompt*
 
 # Compiling & running on tux machine (client)
 
