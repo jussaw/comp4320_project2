@@ -1,4 +1,4 @@
-comp4320_proj1
+comp4320_project2
 
 *see project2 prompt*
 
