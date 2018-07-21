@@ -61,6 +61,7 @@ public class SegmentationImpl implements ISegmentation {
         }
         return sum;
     }
+    
     // adds checksum and sequence number to data buffer
     public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
         String str = new String(buf);
