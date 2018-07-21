@@ -27,15 +27,14 @@ public class GremlinImpl implements IGremlin {
 			}
 		}
 		if(randCorruptDamageCorrect >= corrupProb && randCorruptDamageCorrect < newLossProb) {
-			//Code to not send ack to server
+			return null;
 		}
 		return corruptedPacket;
 	}
 
 	public DatagramPacket makeCorruption(DatagramPacket packetIn, int numOfPacketsToCorrupt) {
 		Random rand = new Random();
-		int iter = numOfPAckets;
-		int bitToCorrupt;
+		int iter = numOfPacketsToCorrupt, bitToCorrupt;
 		int[] alreadyCorrupted = {500, 500, 500};
 		byte[] corruptedBytes = packetIn.getData();
 		boolean alreadyCorruptedBool = false;
@@ -59,3 +58,4 @@ public class GremlinImpl implements IGremlin {
 		}
 		return corruptedPacket;
 	}
+}

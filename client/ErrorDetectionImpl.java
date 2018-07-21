@@ -1,7 +1,7 @@
 package client;
 import java.net.DatagramPacket;
 public class ErrorDetectionImpl implements IErrorDetection {
-    // checks the validity of a packet given a hash/checksum
+    // checks the validity of a packet given a checksum
     ErrorDetectionImpl() {
         this.numberOfCorruptedPackets = 0;
     }
