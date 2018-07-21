@@ -1,5 +1,5 @@
 package server;
-import java.net.DatagramPacket
+import java.net.DatagramPacket;
 public class SRPacket {
 
 	private DatagramPacket packet;
