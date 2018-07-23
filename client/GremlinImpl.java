@@ -9,10 +9,11 @@ public class GremlinImpl implements IGremlin {
 	}
 	public DatagramPacket corruptPacket(DatagramPacket packet, float corrupProb, float lossProb) {
 
-		return new DatagramPacket(new byte[], 0);
+		return new DatagramPacket(new byte[0], 0);
 	}
 
 	public DatagramPacket makeCorruption(DatagramPacket packetIn, int numOfPacketsToCorrupt) {
 
-		return new DatagramPacket(new byte[], 0);
+		return new DatagramPacket(new byte[0], 0);
 	}
+}
