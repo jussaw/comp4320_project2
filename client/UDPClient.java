@@ -23,14 +23,13 @@ public static final int PORT_NUMBER = 10024;
       IAssembler assembler = new AssemblerImpl();
 
       float probabilityOfError = Float.parseFloat(args[0]);
+      float probabilityOfLoss = Float.parseFloat(args[1]);
   
       sendData = new String("GET " + FILE_NAME + " HTTP/1.0").getBytes();
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, PORT_NUMBER);
-      DatagramPacket gremlinedPacket;
-      boolean isCorrupt = false;
 
       //send datagram to server
       clientSocket.send(sendPacket);
@@ -46,12 +45,12 @@ public static final int PORT_NUMBER = 10024;
         clientSocket.receive(receivePacket);
         String receivedData = new String(receivePacket.getData());
         receivePacket.setLength(receivedData.length());
-        DatagramPacket gremlinedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
+        DatagramPacket gremlinedPacket = gremlin.corruptPacket(receivePacket, probabilityOfError, probabilityOfLoss);
         if (gremlinedPacket == null || errorDetec.detectErrors(gremlinedPacket)) {
           System.out.println("Packet error occured.");
-          sendNAK(errorDetec.getSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
+          sendNAK(SRPacket.parseSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
         } else {
-        	sendACK(errorDetec.getSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
+        	sendACK(SRPacket.parseSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
         	assembler.newPacketIn(gremlinedPacket);
         }
       }
@@ -72,13 +71,13 @@ public static final int PORT_NUMBER = 10024;
         }
     }
 
-    public void sendNAK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
-      String sendData = "NAK: " + sequenceNumber;
+    public static void sendNAK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
+      String sendData = "SENDING NAK: " + sequenceNumber;
       DatagramPacket nakPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(nakPacket);
     }
-    public void sendACK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
-      String sendData = "ACK: " + sequenceNumber;
+    public static void sendACK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
+      String sendData = "SENDING ACK: " + sequenceNumber;
       DatagramPacket ackPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(ackPacket);
     }
