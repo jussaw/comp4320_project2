@@ -8,6 +8,7 @@ public class GremlinImpl implements IGremlin {
 
 	}
 	public DatagramPacket corruptPacket(DatagramPacket packet, float corrupProb, float lossProb) {
+		float newLossProb= corrupProb + lossProb;
 
 		Random rand = new Random();
 		float randCorruptDamageCorrect = rand.nextFloat();
