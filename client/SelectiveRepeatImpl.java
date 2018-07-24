@@ -1,9 +1,10 @@
 package client;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.Vector;
 public class SelectiveRepeatImpl implements ISelectiveRepeat {
-   public DatagramPacket rcvSocket;
-   
+   public DatagramSocket rcvSocket;
+
    public void transmit(Vector<DatagramPacket> packetsToSend) {
       //receiver buffer
       //sends/receives packets
@@ -19,22 +20,22 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
                rcvBuffer.removeElement(pts);//double check
                rcvBuffer.trimToSize();
                rcvBuffer.setSize(window);
-            //if nak, add nak to buffer   
+            //if nak, add nak to buffer
             }else if(false){//pts.get(msg) == nak){
                //rcvBuffer[pts] = nak;
                timeIt(pts);
-            //if nothing received, start timeout timer   
+            //if nothing received, start timeout timer
             }else{
                // startTimeoutTimer();
             }
          }
-      } 
+      }
    }
-   
+
    public void timeIt(DatagramPacket nakPacket){
       //timer.stop();
       //rcvSocket.send(nakPacket);
       //timer.update();
    }
-   
+
 }

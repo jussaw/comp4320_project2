@@ -14,6 +14,4 @@ public class ErrorDetectionImpl implements IErrorDetection {
 		System.out.println("Parsed checksum: " + parsedChecksum);
 		return calculatedChecksum != parsedChecksum;
 	}
-	
-	
 }
