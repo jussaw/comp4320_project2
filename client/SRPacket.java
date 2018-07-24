@@ -6,6 +6,7 @@ public class SRPacket {
 	private int sequenceNumber;
 	private int parsedChecksum;
 	private boolean acked;
+	private long sentTime;
 
 	public SRPacket(DatagramPacket packet) {
 		this.packet = packet;
@@ -25,6 +26,9 @@ public class SRPacket {
 	}
 	public int getParsedChecksum() {
 		return this.parsedChecksum;
+	}
+	public DatagramPacket getDatagramPacket() {
+		return this.packet;
 	}
 	public static int parseSequenceNumber(DatagramPacket packet) {
 		try {
@@ -64,5 +68,12 @@ public class SRPacket {
 		String headersAndData = new String(packet.getData());
 		String data = headersAndData.substring(headersAndData.indexOf("\r\n\r\n") + 4);
 		return data.getBytes();
+	}
+
+	public void setSentTime() {
+		this.sentTime = new Date().getTime();
+	}
+	public long getSentTime() {
+		return this.sendTime;
 	}
 }
