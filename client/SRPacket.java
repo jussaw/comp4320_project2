@@ -32,7 +32,7 @@ public class SRPacket {
 			String headers = headersAndData.substring(0, headersAndData.indexOf("\r\n\r\n"));
 			String headersArr[] = headers.split("\r\n");
 			for (String header : headersArr) {
-				if (header.split(" ")[0].equals("Sequence-number:")) {
+				if (header.split(" ")[0].equals("Sequence-Number:")) {
 					return Integer.parseInt(header.split(" ")[1]);
 				}
 			}

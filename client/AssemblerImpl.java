@@ -26,10 +26,10 @@ public class AssemblerImpl implements IAssembler {
 
 	public byte[] getAssembledDocument() {
 		String document = "";
-		this.receivedPackets.sort(this.packetComparator);
+		//this.receivedPackets.sort(this.packetComparator);
 		for (DatagramPacket packet : receivedPackets) {
 			document += SRPacket.getData(packet);
-			System.out.println(SRPacket.getData(packet));
+			//System.out.println(SRPacket.getData(packet));
 		}
 		return document.getBytes();
 	}

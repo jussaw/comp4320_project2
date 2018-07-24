@@ -49,7 +49,7 @@ public class SegmentationImpl implements ISegmentation {
             }
             byte[] dataWithHeaders = this.includeHeaderLines(temp, i);
             packetsOut[i] = new DatagramPacket(dataWithHeaders, dataWithHeaders.length);
-            System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
+            //System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
         }
         return packetsOut;
     }
@@ -61,14 +61,14 @@ public class SegmentationImpl implements ISegmentation {
         }
         return sum;
     }
-    
+
     // adds checksum and sequence number to data buffer
     public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
         String str = new String(buf);
         str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
                 + "Sequence-Number: " + sequenceNumber +"\r\n\r\n"
                 + str;
-        System.out.println(str);
+        //System.out.println(str);
         return str.getBytes();
     }
 
