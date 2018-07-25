@@ -36,7 +36,7 @@ public static final int PORT_NUMBER = 10024;
       System.out.println("Client sent HTTP request");
 
       //prepare to receive packets 
-      while(!assembler.isComplete()) {
+      while(true) {
         
         byte[] receiveData = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -47,14 +47,14 @@ public static final int PORT_NUMBER = 10024;
         receivePacket.setLength(receivedData.length());
         DatagramPacket gremlinedPacket = gremlin.corruptPacket(receivePacket, probabilityOfError, probabilityOfLoss);
         if (gremlinedPacket == null || errorDetec.detectErrors(gremlinedPacket)) {
-          System.out.println("Packet error occured.");
+          System.out.println("Packet error occured");
           sendNAK(SRPacket.parseSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
         } else {
         	sendACK(SRPacket.parseSequenceNumber(receivePacket), clientSocket, IPAddress, PORT_NUMBER);
         	assembler.newPacketIn(gremlinedPacket);
         }
       }
-      writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
+      // writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
 
@@ -71,13 +71,13 @@ public static final int PORT_NUMBER = 10024;
         }
     }
 
-    public static void sendNAK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
-      String sendData = "SENDING NAK: " + sequenceNumber;
+    public static void sendNAK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) throws IOException {
+      String sendData = "NAK: " + sequenceNumber;
       DatagramPacket nakPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(nakPacket);
     }
-    public static void sendACK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) {
-      String sendData = "SENDING ACK: " + sequenceNumber;
+    public static void sendACK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) throws IOException {
+      String sendData = "ACK: " + sequenceNumber;
       DatagramPacket ackPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(ackPacket);
     }

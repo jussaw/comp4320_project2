@@ -25,7 +25,7 @@ public class GremlinImpl implements IGremlin {
 				corruptedPacket = makeCorruption(packet, 3);
 			}
 		}
-		if(randCorruptDamageCorrect >= corrupProb && randCorruptDamageCorrect < newLossProb) {
+		if(randCorruptDamageCorrect >= corrupProb && randCorruptDamageCorrect < lossProb) { // what was this?
 			return null;
 		}
 		return corruptedPacket;

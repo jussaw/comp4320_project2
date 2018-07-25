@@ -1,11 +1,13 @@
 package server;
 import java.net.DatagramPacket;
+import java.util.Date;
 public class SRPacket {
 
 	private DatagramPacket packet;
 	private int sequenceNumber;
 	private int parsedChecksum;
 	private boolean acked;
+	private long sentTime;
 
 	public SRPacket(DatagramPacket packet) {
 		this.packet = packet;
@@ -26,13 +28,16 @@ public class SRPacket {
 	public int getParsedChecksum() {
 		return this.parsedChecksum;
 	}
+	public DatagramPacket getDatagramPacket() {
+		return this.packet;
+	}
 	public static int parseSequenceNumber(DatagramPacket packet) {
 		try {
 			String headersAndData = new String(packet.getData());
 			String headers = headersAndData.substring(0, headersAndData.indexOf("\r\n\r\n"));
 			String headersArr[] = headers.split("\r\n");
 			for (String header : headersArr) {
-				if (header.split(" ")[0].equals("Sequence-number:")) {
+				if (header.split(" ")[0].equals("Sequence-Number:")) {
 					return Integer.parseInt(header.split(" ")[1]);
 				}
 			}
@@ -64,5 +69,12 @@ public class SRPacket {
 		String headersAndData = new String(packet.getData());
 		String data = headersAndData.substring(headersAndData.indexOf("\r\n\r\n") + 4);
 		return data.getBytes();
+	}
+
+	public void setSentTime() {
+		this.sentTime = new Date().getTime();
+	}
+	public long getSentTime() {
+		return this.sentTime;
 	}
 }
