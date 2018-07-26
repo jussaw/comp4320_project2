@@ -7,5 +7,5 @@ public interface ISelectiveRepeat {
    public DatagramPacket serverSocket = null;
    public Vector<DatagramPacket> rcvBuffer = new Vector<DatagramPacket>(8);
    public void transmit(Vector<DatagramPacket> packetsToSend);
-   public void timeIt(DatagramPacket nakPacket);
+   //public void timeIt(DatagramPacket nakPacket);
 }
