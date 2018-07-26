@@ -34,6 +34,8 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 		while (allPackets.size() > 0) {
 			// if there is room in the window send a packet
 			if (window.size() < WINDOW_SIZE) {
+				System.out.println("sends packet");
+
 				SRPacket packet = allPackets.remove(0);
 				packet.setSentTime();
 				System.out.println("Sending packet:" + packet.getSequenceNumber());
@@ -42,13 +44,16 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 			}
 			// if there isn't room in the window and the packet hasn't timed out, wait to receive ACK/NAK
 			else if (!window.get(0).isAcked() && new Date().getTime() - window.get(0).getSentTime() < TIMEOUT_INTERVAL) {
+				System.out.println("Waiting to receive ACK/NAK");
+
 				byte[] receiveBuf = new byte[1024];
 				DatagramPacket ackPacket = new DatagramPacket(receiveBuf, receiveBuf.length);
 				serverSocket.receive(ackPacket);
 				System.out.println(new String(ackPacket.getData()));
+
 				// If ACK received then process ACK, elseprocess NAK
 				String data = new String(ackPacket.getData());
-				String sequenceNumberString = data.split(" ")[1];
+				String sequenceNumberString = data.split(" ")[1].trim();
 				int sequenceNumber = Integer.parseInt(sequenceNumberString);
 				if (parseACK(ackPacket)) {
 					processACK(sequenceNumber);
@@ -56,10 +61,11 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 				else {
 					processNAK(sequenceNumber);
 				}
-
 			}
 			// a packet times out
 			else {
+				System.out.println("Packet timed out");
+
 				// retransmit timed out packet
 				SRPacket retransmitPacket = window.remove(0);
 				retransmitPacket.setSentTime();
@@ -73,9 +79,11 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 	// Then it runs a while loop which will remove all the consecutive ACKed
 	// packets at the front of the window.
 	public void processACK(int sequenceNumber) {
-		for (SRPacket packet : window) {
+		for (int i = 0; i < window.size(); i++) {
+			SRPacket packet = window.remove(i);
 			if (packet.getSequenceNumber() == sequenceNumber) {
 				packet.ack();
+				window.insertElementAt(packet, i);
 				while(window.get(0).isAcked()) {
 					window.remove(0);
 				}

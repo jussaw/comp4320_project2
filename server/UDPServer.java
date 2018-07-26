@@ -1,39 +1,47 @@
 package server;
 import java.io.*;
-import java.net.*; 
+import java.net.*;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.nio.file.Files;
 
 public class UDPServer {
-  public static void main(String args[]) throws Exception 
-    { 
+  public static void main(String args[]) throws Exception
+    {
       //create datagram socket at port 10025
-      DatagramSocket serverSocket = new DatagramSocket(10024);
-  
-      byte[] receiveData = new byte[1024]; 
-      byte[] sendData  = new byte[1024]; 
-  
-      while(true) 
-        { 
+      DatagramSocket serverSocket = new DatagramSocket(10025);
+
+      byte[] receiveData = new byte[1024];
+      byte[] sendData  = new byte[1024];
+
+      while(true) {
         //create space for recieved datagram
-          DatagramPacket receivePacket = 
-             new DatagramPacket(receiveData, receiveData.length); 
-           serverSocket.receive(receivePacket); 
+          System.out.println("server running1");
+          DatagramPacket receivePacket =
+             new DatagramPacket(receiveData, receiveData.length);
+
+           System.out.println("server running2");
+           serverSocket.receive(receivePacket);
 
         //recieve datagram
-            String request = new String(receivePacket.getData()); 
-  
+          System.out.println("server running3");
+          String request = new String(receivePacket.getData());
+
         //Get IP addr port #, of sender
-          InetAddress IPAddress = receivePacket.getAddress(); 
+          System.out.println("server running4");
+          InetAddress IPAddress = receivePacket.getAddress();
         //^
-          int port = receivePacket.getPort(); 
+
+          System.out.println("server running5");
+          int port = receivePacket.getPort();
 
           // process http request
+          System.out.println("server running6");
           String[] requestLines = request.split("\r\n");
           String[] requestArgs = requestLines[0].split(" ");
           switch(requestArgs[0]) {
             case "GET": sendData = get(requestArgs[1]);
+              System.out.println("server running7");
               ISegmentation segmentor = new SegmentationImpl();
               ISelectiveRepeat selectiveRepeat = new SelectiveRepeatImpl(serverSocket);
               String data = "HTTP/1.0 200 Document Follows\r\n"
@@ -45,9 +53,9 @@ public class UDPServer {
               break;
             default: System.out.println("Error: Invalid request method " + requestArgs[1]);
               break;
-          }  
+          }
         }
-        //end of while loop, loop pack and wait for another datagram 
+        //end of while loop, loop pack and wait for another datagram
     }
 
     public static byte[] get(String fileName) {
@@ -61,4 +69,4 @@ public class UDPServer {
       return ret;
     }
 
-}  
+}

@@ -31,24 +31,26 @@ public class GremlinImpl implements IGremlin {
 		return corruptedPacket;
 	}
 
-	public DatagramPacket makeCorruption(DatagramPacket packetIn, int numOfPacketsToCorrupt) {
+	/*public DatagramPacket makeCorruption(DatagramPacket packetIn, int numOfPacketsToCorrupt) {
 		Random rand = new Random();
-		int iter = numOfPacketsToCorrupt, bitToCorrupt;
-		int[] alreadyCorrupted = {500, 500, 500};
+		int iter = numOfPacketsToCorrupt;
+		int bitToCorrupt;
+		int[] alreadyCorrupted = {1000, 1000, 1000};
 		byte[] corruptedBytes = packetIn.getData();
 		boolean alreadyCorruptedBool = false;
 		DatagramPacket corruptedPacket = packetIn;
 
 		while(iter > 0) {
+			System.out.println("corruption num: " + iter);
 			alreadyCorruptedBool = false;
-			for (int num : alreadyCorrupted) {
-				if(num < 500){
+			//for (int num : alreadyCorrupted) {
+				//if(num < 1000){
+				if (alreadyCorrupted[iter - 1] < 1000)
 					alreadyCorruptedBool = true;
 				}
-			}
-
+			//}
 			if(!alreadyCorruptedBool){
-				bitToCorrupt = rand.nextInt(256);
+				bitToCorrupt = rand.nextInt(512);
 				alreadyCorrupted[iter - 1] = bitToCorrupt;
 				corruptedBytes[bitToCorrupt]++;
 				corruptedPacket.setData(corruptedBytes);
@@ -56,5 +58,30 @@ public class GremlinImpl implements IGremlin {
 			}
 		}
 		return corruptedPacket;
-	}
+	}*/
+	public DatagramPacket makeCorruption(DatagramPacket packetIn, int numOfPacketsToCorrupt) {
+        Random rand = new Random();
+        int iter = numOfPacketsToCorrupt;
+        int bitToCorrupt;
+        byte[] corruptedBytes = packetIn.getData();
+        boolean[] alreadyCorrupted = new boolean[corruptedBytes.length] ;
+        boolean alreadyCorruptedBool = false;
+        DatagramPacket corruptedPacket = packetIn;
+
+				for (boolean packetBools : alreadyCorrupted) {
+					packetBools = false;
+				}
+
+        for(int i = 0; i < iter; i++) {
+					System.out.println("corruption num: " + iter);
+          bitToCorrupt = rand.nextInt(411) + 50;
+          while(alreadyCorrupted[bitToCorrupt]) {
+              bitToCorrupt = rand.nextInt(411) + 50;
+          }
+          corruptedBytes[bitToCorrupt]++;
+          alreadyCorrupted[bitToCorrupt] = true;
+          corruptedPacket.setData(corruptedBytes);
+        }
+        return corruptedPacket;
+    }
 }
