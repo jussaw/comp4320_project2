@@ -68,20 +68,22 @@ public class GremlinImpl implements IGremlin {
         boolean alreadyCorruptedBool = false;
         DatagramPacket corruptedPacket = packetIn;
 
-				for (boolean packetBools : alreadyCorrupted) {
-					packetBools = false;
-				}
+				if (!SRPacket.detectNullPacket(packetIn)) {
+					for (boolean packetBools : alreadyCorrupted) {
+						packetBools = false;
+					}
 
-        for(int i = 0; i < iter; i++) {
-					System.out.println("corruption num: " + iter);
-          bitToCorrupt = rand.nextInt(411) + 50;
-          while(alreadyCorrupted[bitToCorrupt]) {
-              bitToCorrupt = rand.nextInt(411) + 50;
-          }
-          corruptedBytes[bitToCorrupt]++;
-          alreadyCorrupted[bitToCorrupt] = true;
-          corruptedPacket.setData(corruptedBytes);
-        }
+	        for(int i = 0; i < iter; i++) {
+						System.out.println("corruption num: " + iter);
+	          bitToCorrupt = rand.nextInt(411) + 100;
+	          while(alreadyCorrupted[bitToCorrupt]) {
+	              bitToCorrupt = rand.nextInt(411) +100;
+	          }
+	          corruptedBytes[bitToCorrupt]++;
+	          alreadyCorrupted[bitToCorrupt] = true;
+	          corruptedPacket.setData(corruptedBytes);
+	        }
+				}
         return corruptedPacket;
     }
 }

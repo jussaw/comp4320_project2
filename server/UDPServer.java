@@ -39,8 +39,11 @@ public class UDPServer {
           System.out.println("server running6");
           String[] requestLines = request.split("\r\n");
           String[] requestArgs = requestLines[0].split(" ");
+          System.out.println("requestArgs[0] = " + requestArgs[0]);
+          System.out.println("requestArgs[1] = " + requestArgs[1]);
           switch(requestArgs[0]) {
-            case "GET": sendData = get(requestArgs[1]);
+            case "GET":
+              sendData = get(requestArgs[1]);
               System.out.println("server running7");
               ISegmentation segmentor = new SegmentationImpl();
               ISelectiveRepeat selectiveRepeat = new SelectiveRepeatImpl(serverSocket);

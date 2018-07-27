@@ -51,6 +51,21 @@ public class SegmentationImpl implements ISegmentation {
             packetsOut[i] = new DatagramPacket(dataWithHeaders, dataWithHeaders.length);
             System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
         }
+        ArrayList<DatagramPacket> packetsOutAL = new ArrayList<DatagramPacket>();
+        for (DatagramPacket packet : packetsOut) {
+          packetsOutAL.add(packet);
+        }
+
+        byte[] nullData = {0};
+        nullData = includeHeaderLines(nullData, packetsOut.length);
+        DatagramPacket nullPacket = new DatagramPacket(nullData, nullData.length);
+        packetsOutAL.add(nullPacket);
+
+        packetsOut = new DatagramPacket[packetsOutAL.size()];
+        for(int i = 0; i < packetsOutAL.size(); i++) {
+          packetsOut[i] = packetsOutAL.get(i);
+        }
+
         return packetsOut;
     }
 
@@ -61,12 +76,15 @@ public class SegmentationImpl implements ISegmentation {
         }
         return sum;
     }
-    
+
     // adds checksum and sequence number to data buffer
     public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
         String str = new String(buf);
-        str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
-                + "Sequence-Number: " + sequenceNumber +"\r\n\r\n"
+        int sequenceIndex = sequenceNumber / 24;
+        int moduloSequence = sequenceNumber % 24;
+        str = "Checksum: " + this.calculateChecksum(buf) + "\r\n"
+                + "Sequence-Index: " + sequenceIndex + "\r\n"
+                + "Sequence-Number: " + moduloSequence +"\r\n\r\n"
                 + str;
         System.out.println(str);
         return str.getBytes();

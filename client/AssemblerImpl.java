@@ -2,6 +2,8 @@ package client;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
+
 public class AssemblerImpl implements IAssembler {
 
 	public ArrayList<DatagramPacket> receivedPackets;
@@ -26,15 +28,21 @@ public class AssemblerImpl implements IAssembler {
 
 	public byte[] getAssembledDocument() {
 		String document = "";
-		this.receivedPackets.sort(this.packetComparator);
+		Collections.sort(receivedPackets, new SRPacketComparator());
 		for (DatagramPacket packet : receivedPackets) {
-			document += SRPacket.getData(packet);
-			System.out.println(SRPacket.getData(packet));
+			document += new String(SRPacket.getData(packet));
+			//System.out.println(SRPacket.getData(packet));
 		}
 		return document.getBytes();
 	}
 
 	public boolean isComplete() {
-		return this.nullPacket != null && SRPacket.parseSequenceNumber(nullPacket) == receivedPackets.size() - 1;
+		if (nullPacket != null) {
+			SRPacket nullSR = new SRPacket(nullPacket);
+			System.out.println("Null packet seq: " + nullSR.calculateOriginalSequenceNumber());
+			System.out.println("received packets length: " + receivedPackets.size());
+			return nullSR.calculateOriginalSequenceNumber() == receivedPackets.size() - 1;
+		}
+		return false;
 	}
 }

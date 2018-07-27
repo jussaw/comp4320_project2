@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.nio.file.Files;
+import java.util.Collections;
 public class UDPClient {
 public static final String FILE_NAME = "TestFile.html";
 public static final int PORT_NUMBER = 10025;
@@ -36,7 +37,7 @@ public static final int PORT_NUMBER = 10025;
       System.out.println("Client sent HTTP request");
 
       //prepare to receive packets
-      while(true) {
+      while(!assembler.isComplete()) {
         System.out.println("client running1");
         byte[] receiveData = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -64,8 +65,10 @@ public static final int PORT_NUMBER = 10025;
         } else {
           // packet loss, do nothing
         }
+
+        //writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
       }
-      // writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
+      writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
 
@@ -86,10 +89,12 @@ public static final int PORT_NUMBER = 10025;
       String sendData = "NAK: " + Integer.toString(sequenceNumber);
       DatagramPacket nakPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(nakPacket);
+      System.out.println("Sending NAK: " + sequenceNumber);
     }
     public static void sendACK(int sequenceNumber, DatagramSocket clientSocket, InetAddress senderAddr, int port) throws IOException {
       String sendData = "ACK: " + Integer.toString(sequenceNumber);
       DatagramPacket ackPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), senderAddr, port);
       clientSocket.send(ackPacket);
+      System.out.println("Sending ACK: " + sequenceNumber);
     }
 }
