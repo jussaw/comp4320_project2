@@ -16,23 +16,18 @@ public class UDPServer {
 
       while(true) {
         //create space for recieved datagram
-          System.out.println("server running1");
           DatagramPacket receivePacket =
              new DatagramPacket(receiveData, receiveData.length);
 
-           System.out.println("server running2");
            serverSocket.receive(receivePacket);
 
         //recieve datagram
-          System.out.println("server running3");
           String request = new String(receivePacket.getData());
 
         //Get IP addr port #, of sender
-          System.out.println("server running4");
           InetAddress IPAddress = receivePacket.getAddress();
         //^
 
-          System.out.println("server running5");
           int port = receivePacket.getPort();
 
           // process http request

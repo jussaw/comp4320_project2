@@ -46,7 +46,6 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 			//System.out.println("allPackets size = " + allPackets.size());
 			//System.out.println("window size = " + window.size());
 			if (window.size() < WINDOW_SIZE && allPackets.size() > 0) {
-				System.out.println("sends packet");
 
 				SRPacket packet = allPackets.remove(0);
 				packet.setSentTime();
@@ -56,12 +55,10 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 			}
 			// if there isn't room in the window and the packet hasn't timed out, wait to receive ACK/NAK
 			else if (window.size() > 0 && !window.get(0).isAcked() && new Date().getTime() - window.get(0).getSentTime() < TIMEOUT_INTERVAL) {
-				System.out.println("Waiting to receive ACK/NAK");
 				try {
 					byte[] receiveBuf = new byte[1024];
 					DatagramPacket ackPacket = new DatagramPacket(receiveBuf, receiveBuf.length);
 					serverSocket.receive(ackPacket);
-					System.out.println(new String(ackPacket.getData()));
 
 					// If ACK received then process ACK, elseprocess NAK
 					String data = new String(ackPacket.getData()).trim();
@@ -118,11 +115,8 @@ public class SelectiveRepeatImpl implements ISelectiveRepeat {
 	// Processes a NAK. Finds where the NAK'd packet is in the window
 	// then removes it from the window. Then it retransmitts the packet
 	// and adds it back to the end of the window.
-	public void processNAK(int sequenceNumber) throws Exception{
-		System.out.println("Processing NAK");
+	public void processNAK(int sequenceNumber) throws Exception {
 		for (int i = 0; i < window.size(); i++) {
-			System.out.println("actual sequence number: " + window.get(i).getSequenceNumber());
-			System.out.println("expected sequence number: " + sequenceNumber);
 			if (window.get(i).getSequenceNumber() == sequenceNumber) {
 				System.out.println("Retransmitting NAK");
 				SRPacket retransmitPacket = window.remove(i);
