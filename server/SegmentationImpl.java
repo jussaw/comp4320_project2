@@ -56,7 +56,8 @@ public class SegmentationImpl implements ISegmentation {
           packetsOutAL.add(packet);
         }
 
-        byte[] nullData = {0};
+        byte[] nullData = new byte[1];
+        nullData[0]= 0;
         nullData = includeHeaderLines(nullData, packetsOut.length);
         DatagramPacket nullPacket = new DatagramPacket(nullData, nullData.length);
         packetsOutAL.add(nullPacket);

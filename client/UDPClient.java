@@ -65,10 +65,8 @@ public static final int PORT_NUMBER = 10025;
         } else {
           // packet loss, do nothing
         }
-
-        //writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
+        writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
       }
-      writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
 

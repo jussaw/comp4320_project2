@@ -9,6 +9,7 @@ public class AssemblerImpl implements IAssembler {
 	public ArrayList<DatagramPacket> receivedPackets;
 	private Comparator<DatagramPacket> packetComparator;
 	private DatagramPacket nullPacket;
+	private String lastLine;
 
 	AssemblerImpl() {
 		this.receivedPackets = new ArrayList<DatagramPacket>();
@@ -18,7 +19,14 @@ public class AssemblerImpl implements IAssembler {
 	public void newPacketIn(DatagramPacket newPacket) {
 		if (!receivedPackets.contains(newPacket)) {
 			System.out.println("NEW PACKET IN: " + SRPacket.parseSequenceNumber(newPacket) );
-			if (SRPacket.parseChecksum(newPacket) == 0) { // null packet (final packet) received
+//
+
+			String str = new String(SRPacket.getData(newPacket));
+			if(str.indexOf("</body>") > 0){
+					lastLine = str;
+			};
+//
+			if (SRPacket.detectNullPacket(newPacket)) { // null packet (final packet) received
 				System.out.println("received null packet");
 				this.nullPacket = newPacket;
 			}
@@ -30,9 +38,12 @@ public class AssemblerImpl implements IAssembler {
 		String document = "";
 		Collections.sort(receivedPackets, new SRPacketComparator());
 		for (DatagramPacket packet : receivedPackets) {
-			document += new String(SRPacket.getData(packet));
+			if (document.indexOf(new String(SRPacket.getData(packet))) < 0) {
+				document += new String(SRPacket.getData(packet));
+			}
 			//System.out.println(SRPacket.getData(packet));
 		}
+		document += lastLine;
 		return document.getBytes();
 	}
 
